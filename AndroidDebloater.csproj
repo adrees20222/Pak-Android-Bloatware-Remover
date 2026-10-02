@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\app_icon.ico</ApplicationIcon>
+    <AssemblyTitle>Pak Android Bloatware Remover</AssemblyTitle>
+    <AssemblyProduct>Pak Android Bloatware Remover</AssemblyProduct>
+    <Version>1.0.0</Version>
+    <Authors>Muhammad Adrees</Authors>
+    <Company>OpenSource</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="platform-tools\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Resource Include="Assets\app_icon.png" />
+  </ItemGroup>
+
+</Project>

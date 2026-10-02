@@ -1,0 +1,761 @@
+<Window x:Class="AndroidDebloater.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AndroidDebloater"
+        mc:Ignorable="d"
+        Title="Pak Android Bloatware Remover" 
+        Icon="Assets/app_icon.png"
+        Height="780" Width="1160"
+        MinHeight="640" MinWidth="920"
+        WindowStartupLocation="CenterScreen"
+        Background="#F0FDF4"
+        Foreground="#0F172A"
+        FontFamily="Segoe UI, Segoe UI Variable, sans-serif">
+
+    <Window.Resources>
+        <!-- Modern Scrollbar Style -->
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="#F0FDF4"/>
+            <Setter Property="Foreground" Value="#A7F3D0"/>
+        </Style>
+
+        <!-- Modern TabItem Style for Pakistani Green Theme -->
+        <Style TargetType="TabItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#065F46"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabBorder" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="0,0,0,3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#047857"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="#FFFFFF"/>
+                                <Setter Property="Foreground" Value="#064E3B"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#047857"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Standard Outline Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="Foreground" Value="#065F46"/>
+            <Setter Property="BorderBrush" Value="#A7F3D0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="14,7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="content" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#DCFCE7"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#059669"/>
+                                <Setter Property="Foreground" Value="#064E3B"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#BBF7D0"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#047857"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Pakistani Emerald Green Primary Button Style -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#047857"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#065F46"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="14,7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="content" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#065F46"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#064E3B"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#064E3B"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#022C22"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Danger Red Button Style -->
+        <Style x:Key="DangerButton" TargetType="Button">
+            <Setter Property="Background" Value="#DC2626"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#B91C1C"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="14,7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="content" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#B91C1C"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#991B1B"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#991B1B"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#7F1D1D"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Success Button Style -->
+        <Style x:Key="SuccessButton" TargetType="Button">
+            <Setter Property="Background" Value="#059669"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#047857"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="14,7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="content" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#047857"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#065F46"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#065F46"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#064E3B"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Play Store Outline Link Button -->
+        <Style x:Key="StoreLinkButton" TargetType="Button">
+            <Setter Property="Background" Value="#F0FDF4"/>
+            <Setter Property="Foreground" Value="#047857"/>
+            <Setter Property="BorderBrush" Value="#86EFAC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#DCFCE7"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#047857"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Footer Link Style -->
+        <Style x:Key="FooterLink" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#047857"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="10,0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="TextDecorations" Value="Underline"/>
+                    <Setter Property="Foreground" Value="#064E3B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="16,14,16,10">
+        <Grid.RowDefinitions>
+            <!-- 0: Header & Device Info Banner -->
+            <RowDefinition Height="Auto"/>
+            <!-- 1: Search & Filter Toolbar -->
+            <RowDefinition Height="Auto"/>
+            <!-- 2: Main Content Tabs -->
+            <RowDefinition Height="*"/>
+            <!-- 3: Status Bar -->
+            <RowDefinition Height="Auto"/>
+            <!-- 4: App Footer & Developer Credits -->
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER & DEVICE INFO CARD -->
+        <Border Grid.Row="0" Background="#FFFFFF" CornerRadius="10" Padding="14,12" Margin="0,0,0,10" BorderBrush="#A7F3D0" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="Assets/app_icon.png" Width="28" Height="28" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Text="Pak Android Bloatware Remover" FontSize="20" FontWeight="Bold" Foreground="#064E3B" Margin="0,0,10,0"/>
+                        <Border Background="#DCFCE7" BorderBrush="#86EFAC" BorderThickness="1" CornerRadius="12" Padding="8,2" VerticalAlignment="Center">
+                            <TextBlock Text="v1.0.0 Pro Edition" FontSize="11" Foreground="#047857" FontWeight="Bold"/>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0" VerticalAlignment="Center">
+                        <Ellipse x:Name="statusIndicator" Width="10" Height="10" Fill="#EF4444" Margin="0,0,8,0"/>
+                        <TextBlock x:Name="txtDeviceInfo" Text="Searching for connected device..." FontSize="13" Foreground="#1E293B" FontWeight="Medium"/>
+                        <TextBlock x:Name="txtBatteryInfo" Text="" FontSize="13" Foreground="#059669" FontWeight="Bold" Margin="14,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Header Action Buttons -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="btnRefreshDevice" Content="🔄 Refresh Device" Style="{StaticResource ModernButton}" Margin="0,0,8,0" Click="BtnRefreshDevice_Click"/>
+                    <Button x:Name="btnExportList" Content="📥 Export List" Style="{StaticResource ModernButton}" Click="BtnExportList_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- SEARCH & FILTER TOOLBAR -->
+        <Border Grid.Row="1" Background="#FFFFFF" CornerRadius="8" Padding="10" Margin="0,0,0,10" BorderBrush="#A7F3D0" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Search Input -->
+                <Grid Grid.Column="0">
+                    <TextBox x:Name="txtSearch" Background="#F0FDF4" Foreground="#0F172A" CaretBrush="#047857" BorderBrush="#A7F3D0" BorderThickness="1" Padding="10,6" FontSize="13" TextChanged="TxtSearch_TextChanged">
+                        <TextBox.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </TextBox.Resources>
+                    </TextBox>
+                    <TextBlock IsHitTestVisible="False" Text="🔍 Search installed app name, package ID, or keyword..." VerticalAlignment="Center" HorizontalAlignment="Left" Margin="12,0,0,0" Foreground="#059669" Opacity="0.6" FontSize="13">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Text, ElementName=txtSearch}" Value="">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+
+                <TextBlock Grid.Column="1" Text="Safety:" VerticalAlignment="Center" Margin="14,0,8,0" Foreground="#064E3B" FontWeight="SemiBold" FontSize="13"/>
+                <!-- Safety Filter -->
+                <ComboBox Grid.Column="2" x:Name="cmbSafetyFilter" Background="#FFFFFF" Foreground="#0F172A" FontSize="13" Padding="8,4" SelectionChanged="CmbSafetyFilter_SelectionChanged">
+                    <ComboBoxItem Content="All Safety Levels" IsSelected="True"/>
+                    <ComboBoxItem Content="🟢 Safe to Remove"/>
+                    <ComboBoxItem Content="🟡 Optional / Preference"/>
+                    <ComboBoxItem Content="🔴 System Core"/>
+                </ComboBox>
+
+                <TextBlock Grid.Column="3" Text="Brand:" VerticalAlignment="Center" Margin="14,0,8,0" Foreground="#064E3B" FontWeight="SemiBold" FontSize="13"/>
+                <!-- Brand Filter -->
+                <ComboBox Grid.Column="4" x:Name="cmbBrandFilter" Background="#FFFFFF" Foreground="#0F172A" FontSize="13" Padding="8,4" SelectionChanged="CmbBrandFilter_SelectionChanged">
+                    <ComboBoxItem Content="All Brands" IsSelected="True"/>
+                    <ComboBoxItem Content="Samsung"/>
+                    <ComboBoxItem Content="Google"/>
+                    <ComboBoxItem Content="Xiaomi"/>
+                    <ComboBoxItem Content="Facebook"/>
+                    <ComboBoxItem Content="Microsoft"/>
+                    <ComboBoxItem Content="Universal"/>
+                </ComboBox>
+            </Grid>
+        </Border>
+
+        <!-- MAIN TABS -->
+        <TabControl Grid.Row="2" Background="#FFFFFF" BorderBrush="#A7F3D0" BorderThickness="1">
+            
+            <!-- TAB 1: INSTALLED APPS -->
+            <TabItem Header="📱 Installed Apps">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Apps DataGrid (Not Editable) -->
+                    <DataGrid x:Name="gridInstalled" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                              IsReadOnly="True" Background="#FFFFFF" Foreground="#0F172A" RowBackground="#FFFFFF" AlternatingRowBackground="#F0FDF4"
+                              BorderBrush="#E2E8F0" BorderThickness="1" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#DCFCE7"
+                              HeadersVisibility="Column" SelectionMode="Single" SelectionUnit="FullRow">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="#DCFCE7"/>
+                                <Setter Property="Foreground" Value="#064E3B"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Padding" Value="10,8"/>
+                                <Setter Property="BorderBrush" Value="#A7F3D0"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+
+                        <DataGrid.Columns>
+                            <!-- Interactive Checkbox -->
+                            <DataGridTemplateColumn Width="40" IsReadOnly="False">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" 
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Friendly App Name -->
+                            <DataGridTemplateColumn Header="App Name" Width="220">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding FriendlyName}" FontWeight="SemiBold" Foreground="#0F172A" VerticalAlignment="Center" Margin="6,4"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Safety Badge Chip -->
+                            <DataGridTemplateColumn Header="Safety" Width="110">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{Binding SafetyBadgeBackground}" BorderBrush="{Binding SafetyBadgeBorder}" BorderThickness="1" CornerRadius="12" Padding="8,3" HorizontalAlignment="Left" Margin="4">
+                                            <TextBlock Text="{Binding SafetyBadgeText}" Foreground="{Binding SafetyBadgeColor}" FontWeight="Bold" FontSize="11"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Brand -->
+                            <DataGridTextColumn Header="Brand" Binding="{Binding Brand}" Width="100" Foreground="#065F46"/>
+
+                            <!-- Package ID -->
+                            <DataGridTextColumn Header="Package Name (ID)" Binding="{Binding PackageName}" Width="250" Foreground="#64748B"/>
+
+                            <!-- Description -->
+                            <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" Foreground="#94A3B8"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Bottom Action Toolbar -->
+                    <Border Grid.Row="1" Background="#F0FDF4" CornerRadius="8" Padding="12" Margin="0,10,0,0" BorderBrush="#A7F3D0" BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Content="Select All" Style="{StaticResource ModernButton}" Margin="0,0,8,0" Click="BtnSelectAll_Click"/>
+                                <Button Content="Deselect All" Style="{StaticResource ModernButton}" Margin="0,0,8,0" Click="BtnDeselectAll_Click"/>
+                                <Button Content="⚡ Select Safe Bloatware" Style="{StaticResource SuccessButton}" Margin="0,0,8,0" Click="BtnSelectSafeBloatware_Click"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <CheckBox x:Name="chkKeepData" Content="Keep app data (-k)" IsChecked="True" Foreground="#064E3B" FontWeight="Medium" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                                <Button x:Name="btnUninstallSelected" Content="🗑️ Uninstall Selected" Style="{StaticResource DangerButton}" Click="BtnUninstallSelected_Click"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 2: RESTORE / UNINSTALLED APPS -->
+            <TabItem Header="🔄 Restore Apps">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Apps listed below were previously uninstalled for User 0 and can be restored back onto your phone." 
+                               Foreground="#065F46" FontSize="13" Margin="0,0,0,10"/>
+
+                    <DataGrid Grid.Row="1" x:Name="gridUninstalled" AutoGenerateColumns="False" CanUserAddRows="False"
+                              IsReadOnly="True" Background="#FFFFFF" Foreground="#0F172A" RowBackground="#FFFFFF" AlternatingRowBackground="#F0FDF4"
+                              BorderBrush="#E2E8F0" BorderThickness="1" HeadersVisibility="Column">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="#DCFCE7"/>
+                                <Setter Property="Foreground" Value="#064E3B"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Padding" Value="10,8"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="40" IsReadOnly="False">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="App Name" Binding="{Binding FriendlyName}" Width="220" FontWeight="SemiBold"/>
+                            <DataGridTextColumn Header="Package Name" Binding="{Binding PackageName}" Width="300" Foreground="#64748B"/>
+                            <DataGridTextColumn Header="Brand" Binding="{Binding Brand}" Width="120"/>
+                            <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" Foreground="#94A3B8"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button Content="Select All" Style="{StaticResource ModernButton}" Margin="0,0,8,0" Click="BtnSelectAllUninstalled_Click"/>
+                        <Button x:Name="btnRestoreSelected" Content="🔄 Restore Selected Apps" Style="{StaticResource SuccessButton}" Click="BtnRestoreSelected_Click"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 3: APP SEARCH & DIRECT INSTALL -->
+            <TabItem Header="🔍 Search &amp; Install Apps">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <!-- 0: Search Toolbar -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 1: Local APK Install Banner -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 2: Search Results List -->
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Search Box -->
+                    <Border Grid.Row="0" Background="#F0FDF4" BorderBrush="#A7F3D0" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0" Margin="0,0,10,0">
+                                <TextBox x:Name="txtPlayStoreQuery" Background="#FFFFFF" Foreground="#0F172A" CaretBrush="#047857" BorderBrush="#A7F3D0" BorderThickness="1" Padding="10,8" FontSize="13" KeyDown="TxtPlayStoreQuery_KeyDown">
+                                    <TextBox.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="6"/>
+                                        </Style>
+                                    </TextBox.Resources>
+                                </TextBox>
+                                <TextBlock IsHitTestVisible="False" Text="🔍 Search any app (e.g. WhatsApp, CapCut, Instagram, Spotify, com.wt.apkinfo)..." VerticalAlignment="Center" HorizontalAlignment="Left" Margin="12,0,0,0" Foreground="#059669" Opacity="0.6" FontSize="13">
+                                    <TextBlock.Style>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=txtPlayStoreQuery}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+
+                            <Button Grid.Column="1" x:Name="btnSearchPlayStore" Content="🔍 Search &amp; Fetch App" Style="{StaticResource PrimaryButton}" Padding="16,8" Click="BtnSearchPlayStore_Click"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Drag & Drop / Local APK Install Box -->
+                    <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#A7F3D0" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,10" AllowDrop="True" Drop="BorderApkDrop_Drop" DragEnter="BorderApkDrop_DragEnter">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="📁 Or Install Local APK File directly" FontSize="13" FontWeight="Bold" Foreground="#064E3B"/>
+                                <TextBlock Text="Drag and drop any downloaded .apk file here or browse from your PC to install onto your phone." Foreground="#065F46" FontSize="11" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Content="📂 Browse APK File..." Style="{StaticResource ModernButton}" Click="BtnBrowseApk_Click"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Search Results DataGrid (Not Editable) -->
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock x:Name="txtSearchResultsHeader" Text="Available Apps (No Google Account Required):" FontWeight="Bold" Foreground="#064E3B" FontSize="13" Margin="0,0,0,6"/>
+
+                        <DataGrid Grid.Row="1" x:Name="gridStoreApps" AutoGenerateColumns="False" CanUserAddRows="False"
+                                  IsReadOnly="True" Background="#FFFFFF" Foreground="#0F172A" RowBackground="#FFFFFF" AlternatingRowBackground="#F0FDF4"
+                                  BorderBrush="#E2E8F0" BorderThickness="1" HeadersVisibility="Column">
+                            <DataGrid.ColumnHeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#DCFCE7"/>
+                                    <Setter Property="Foreground" Value="#064E3B"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Padding" Value="10,8"/>
+                                </Style>
+                            </DataGrid.ColumnHeaderStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="App Name" Binding="{Binding Title}" Width="210" FontWeight="Bold"/>
+                                <DataGridTextColumn Header="Package Name (ID)" Binding="{Binding PackageName}" Width="220" Foreground="#047857"/>
+                                <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="85" Foreground="#64748B"/>
+                                <DataGridTextColumn Header="Size" Binding="{Binding FileSizeFormatted}" Width="75" Foreground="#059669"/>
+                                <DataGridTextColumn Header="Rating" Binding="{Binding Rating}" Width="70" Foreground="#D97706"/>
+
+                                <!-- View in Play Store Link Button -->
+                                <DataGridTemplateColumn Header="Play Store" Width="110">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="🌐 Play Store" Style="{StaticResource StoreLinkButton}" Click="BtnViewInPlayStore_Click" Tag="{Binding PackageName}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <!-- Action Button Column -->
+                                <DataGridTemplateColumn Header="Action" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="⬇️ Download &amp; Install to Phone" Style="{StaticResource SuccessButton}" Padding="12,5" FontSize="12" Click="BtnInstallSearchResult_Click" Tag="{Binding}" HorizontalAlignment="Left"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 4: HOW TO USE & MOBILE SETUP GUIDE -->
+            <TabItem Header="📖 How to Use">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="14">
+                    <StackPanel MaxWidth="900" HorizontalAlignment="Left">
+                        <TextBlock Text="📱 Step-by-Step Android Setup Guide" FontSize="18" FontWeight="Bold" Foreground="#064E3B" Margin="0,0,0,12"/>
+                        <TextBlock Text="Follow these simple steps on your Android mobile phone to connect and debloat:" Foreground="#065F46" FontSize="13" Margin="0,0,0,16"/>
+
+                        <!-- Step 1 Card -->
+                        <Border Background="#FFFFFF" CornerRadius="8" BorderBrush="#A7F3D0" BorderThickness="1" Padding="14" Margin="0,0,0,12">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="#047857" CornerRadius="12" Width="24" Height="24" Margin="0,0,10,0">
+                                        <TextBlock Text="1" Foreground="#FFFFFF" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="Enable Developer Options on Your Phone" FontWeight="Bold" FontSize="14" Foreground="#064E3B" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Text="• Open your phone's Settings app." Foreground="#334155" Margin="34,6,0,2"/>
+                                <TextBlock Text="• Scroll down to 'About Phone' (or 'About Device' / 'Software Information')." Foreground="#334155" Margin="34,0,0,2"/>
+                                <TextBlock Text="• Find 'Build Number' and tap it 7 times quickly until a popup says 'You are now a developer!'." Foreground="#047857" FontWeight="SemiBold" Margin="34,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Step 2 Card -->
+                        <Border Background="#FFFFFF" CornerRadius="8" BorderBrush="#A7F3D0" BorderThickness="1" Padding="14" Margin="0,0,0,12">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="#047857" CornerRadius="12" Width="24" Height="24" Margin="0,0,10,0">
+                                        <TextBlock Text="2" Foreground="#FFFFFF" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="Turn ON USB Debugging" FontWeight="Bold" FontSize="14" Foreground="#064E3B" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Text="• Go back to the main Settings menu." Foreground="#334155" Margin="34,6,0,2"/>
+                                <TextBlock Text="• Open 'Developer Options' (on some phones: System ➔ Developer Options / Additional Settings)." Foreground="#334155" Margin="34,0,0,2"/>
+                                <TextBlock Text="• Scroll down to find 'USB Debugging' and switch the toggle ON." Foreground="#047857" FontWeight="SemiBold" Margin="34,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Step 3 Card -->
+                        <Border Background="#FFFFFF" CornerRadius="8" BorderBrush="#A7F3D0" BorderThickness="1" Padding="14" Margin="0,0,0,12">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="#047857" CornerRadius="12" Width="24" Height="24" Margin="0,0,10,0">
+                                        <TextBlock Text="3" Foreground="#FFFFFF" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="Connect Phone to PC &amp; Allow Authorization" FontWeight="Bold" FontSize="14" Foreground="#064E3B" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Text="• Connect your phone to your PC with a good USB cable." Foreground="#334155" Margin="34,6,0,2"/>
+                                <TextBlock Text="• Look at your phone screen: A prompt will appear asking 'Allow USB debugging?'." Foreground="#334155" Margin="34,0,0,2"/>
+                                <TextBlock Text="• Check 'Always allow from this computer' and tap 'OK / Allow'." Foreground="#047857" FontWeight="SemiBold" Margin="34,0,0,2"/>
+                                <TextBlock Text="• Click the '🔄 Refresh Device' button on top of this app." Foreground="#334155" Margin="34,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Step 4 Card -->
+                        <Border Background="#FFFFFF" CornerRadius="8" BorderBrush="#A7F3D0" BorderThickness="1" Padding="14" Margin="0,0,0,12">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="#047857" CornerRadius="12" Width="24" Height="24" Margin="0,0,10,0">
+                                        <TextBlock Text="4" Foreground="#FFFFFF" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="Safe Bloatware Removal &amp; 1-Click Restore" FontWeight="Bold" FontSize="14" Foreground="#064E3B" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Text="• Go to 'Installed Apps' tab ➔ Click '⚡ Select Safe Bloatware' ➔ Click 'Uninstall Selected'." Foreground="#334155" Margin="34,6,0,2"/>
+                                <TextBlock Text="• If you ever want any removed app back, go to the 'Restore Apps' tab and restore it anytime!" Foreground="#047857" FontWeight="SemiBold" Margin="34,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB 5: WIRELESS ADB & TOOLS -->
+            <TabItem Header="📶 Wireless &amp; Tools">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
+                    <StackPanel MaxWidth="750" HorizontalAlignment="Left">
+                        <!-- Wireless Section -->
+                        <Border Background="#F0FDF4" CornerRadius="8" Padding="16" BorderBrush="#A7F3D0" BorderThickness="1" Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="📶 Connect Over Wi-Fi (Wireless ADB)" FontSize="16" FontWeight="Bold" Foreground="#047857" Margin="0,0,0,8"/>
+                                <TextBlock Text="Make sure your phone and PC are connected to the same Wi-Fi network. On Android 11+, enable Wireless Debugging in Developer Options." 
+                                           Foreground="#065F46" TextWrapping="Wrap" Margin="0,0,0,12"/>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox x:Name="txtWirelessIp" Width="220" Text="192.168.1." Background="#FFFFFF" Foreground="#0F172A" Padding="8,6" Margin="0,0,8,0"/>
+                                    <TextBox x:Name="txtWirelessPort" Width="80" Text="5555" Background="#FFFFFF" Foreground="#0F172A" Padding="8,6" Margin="0,0,12,0"/>
+                                    <Button x:Name="btnConnectWireless" Content="Connect" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0" Click="BtnConnectWireless_Click"/>
+                                    <Button x:Name="btnDisconnectWireless" Content="Disconnect" Style="{StaticResource ModernButton}" Click="BtnDisconnectWireless_Click"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Device Actions Section -->
+                        <Border Background="#F0FDF4" CornerRadius="8" Padding="16" BorderBrush="#A7F3D0" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="⚙️ Device Power &amp; Reboot Controls" FontSize="16" FontWeight="Bold" Foreground="#047857" Margin="0,0,0,8"/>
+                                <TextBlock Text="Quickly reboot your device into different operating modes." Foreground="#065F46" Margin="0,0,0,12"/>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="🔄 Reboot Device" Style="{StaticResource ModernButton}" Margin="0,0,10,0" Click="BtnRebootNormal_Click"/>
+                                    <Button Content="🛠️ Reboot to Recovery" Style="{StaticResource ModernButton}" Margin="0,0,10,0" Click="BtnRebootRecovery_Click"/>
+                                    <Button Content="⚡ Reboot to Bootloader" Style="{StaticResource ModernButton}" Click="BtnRebootBootloader_Click"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB 6: ACTIVITY LOG -->
+            <TabItem Header="📜 Activity Log">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox x:Name="txtLogConsole" Background="#064E3B" Foreground="#34D399" FontFamily="Consolas, monospace" FontSize="12"
+                             IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="12"
+                             BorderBrush="#A7F3D0" BorderThickness="1"/>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button Content="📋 Copy Log" Style="{StaticResource ModernButton}" Margin="0,0,8,0" Click="BtnCopyLog_Click"/>
+                        <Button Content="🗑️ Clear Log" Style="{StaticResource ModernButton}" Click="BtnClearLog_Click"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!-- BOTTOM STATUS BAR -->
+        <Border Grid.Row="3" Background="#FFFFFF" CornerRadius="6" Padding="10,6" Margin="0,8,0,4" BorderBrush="#A7F3D0" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Status Message -->
+                <TextBlock x:Name="txtStatus" Text="Ready" Foreground="#065F46" VerticalAlignment="Center" FontSize="12"/>
+
+                <!-- Progress Bar -->
+                <ProgressBar Grid.Column="1" x:Name="progressBar" Width="150" Height="14" Margin="16,0" Visibility="Collapsed" IsIndeterminate="True" Background="#DCFCE7" Foreground="#047857"/>
+
+                <!-- Package Counter Summary -->
+                <TextBlock Grid.Column="2" x:Name="txtCountsSummary" Text="Installed: 0 | Safe Bloat: 0" Foreground="#047857" FontWeight="Bold" VerticalAlignment="Center" FontSize="12"/>
+            </Grid>
+        </Border>
+
+        <!-- DEVELOPER CREDITS & FOOTER LINKS -->
+        <Border Grid.Row="4" Background="#FFFFFF" CornerRadius="6" Padding="12,6" Margin="0,4,0,0" BorderBrush="#A7F3D0" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Developed with ❤️ by Muhammad Adrees" VerticalAlignment="Center" FontSize="12" Foreground="#064E3B" FontWeight="Bold"/>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="Portfolio" Style="{StaticResource FooterLink}" MouseLeftButtonDown="LinkPortfolio_Click"/>
+                    <TextBlock Text="|" Foreground="#A7F3D0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Support" Style="{StaticResource FooterLink}" MouseLeftButtonDown="LinkSupport_Click"/>
+                    <TextBlock Text="|" Foreground="#A7F3D0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Donate" Style="{StaticResource FooterLink}" MouseLeftButtonDown="LinkDonate_Click"/>
+                    <TextBlock Text="|" Foreground="#A7F3D0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Terms of Services" Style="{StaticResource FooterLink}" MouseLeftButtonDown="LinkTerms_Click"/>
+                    <TextBlock Text="|" Foreground="#A7F3D0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Privacy Policy" Style="{StaticResource FooterLink}" MouseLeftButtonDown="LinkPrivacy_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

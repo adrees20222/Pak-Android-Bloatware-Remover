@@ -1,0 +1,42 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Build Application (Release)
+      run: |
+        dotnet build AndroidDebloater/AndroidDebloater.csproj -c Release
+
+    - name: Setup Inno Setup
+      uses: codex-/action-innosetup@v1
+      with:
+        inno-version: '6.3.3'
+
+    - name: Compile Windows Setup Installer (.exe)
+      run: |
+        iscc AndroidDebloater/installer.iss
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          installer_output/*.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
