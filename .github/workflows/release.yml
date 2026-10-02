@@ -6,6 +6,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -19,24 +22,23 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
+    - name: Install Inno Setup
+      run: |
+        choco install innosetup --no-progress
+
     - name: Build Application (Release)
       run: |
-        dotnet build AndroidDebloater/AndroidDebloater.csproj -c Release
-
-    - name: Setup Inno Setup
-      uses: codex-/action-innosetup@v1
-      with:
-        inno-version: '6.3.3'
+        dotnet build AndroidDebloater.csproj -c Release
 
     - name: Compile Windows Setup Installer (.exe)
       run: |
-        iscc AndroidDebloater/installer.iss
+        & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
 
-    - name: Create GitHub Release
+    - name: Upload Release Asset
       uses: softprops/action-gh-release@v2
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          installer_output/*.exe
+          ../installer_output/*.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
