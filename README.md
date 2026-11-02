@@ -28,7 +28,10 @@
 - ⚡ **1-Click Safe Bloatware Cleaning**: Instant **"Select Safe Bloatware"** button to check and clean known bloatware automatically.
 - 🔄 **Safe Restore & Reinstall**: Easily restore previously removed system apps back onto your device anytime using the **Restore Apps** tab.
 - 🔍 **App Search & Direct Phone Installer**: Search for any app from Google Play / Open Repositories, inspect the Play Store page, and install directly to your phone — **zero Google account or Play Store login required**.
-- 📁 **Local APK Drag & Drop**: Drag and drop any `.apk` file into the window to install immediately via ADB.
+- 💾 **Backup Selected APKs to PC**: Select any installed apps and extract/backup their APK files directly to any custom PC folder of your choice.
+- 📁 **Batch Multi-APK Installer**: Multi-select multiple `.apk` files or an entire folder to install apps sequentially onto your device.
+- 📊 **Device Specs & Storage Dashboard**: Live battery percentage and real-time internal storage monitoring (Free / Total space) in the header.
+- 📸 **1-Click Phone Screenshot Tool**: Take high-definition phone screenshots and save them directly to your chosen folder on PC.
 - 📶 **Wireless ADB (Wi-Fi)**: Connect and manage your phone over Wi-Fi without needing a USB cable.
 - ⚙️ **Device Power Tools**: Quick 1-click reboot to Normal, Recovery mode, or Fastboot / Bootloader.
 - 📥 **Export Package Profiles**: Export installed app configurations to JSON or text files.
@@ -105,11 +108,11 @@ build_installer.bat
 
 Developed with ❤️ by **Muhammad Adrees**
 
-- 🌐 **Portfolio**: [adrees2022.blogspot.com](https://adrees2022.blogspot.com/)
-- 💬 **Support**: [Get Support](https://my-extension.blogspot.com/p/support.html)
-- ☕ **Donate**: [Support the Project](https://my-extension.blogspot.com/p/donate.html)
-- 📜 **Terms of Service**: [Terms](https://my-extension.blogspot.com/p/terms.html)
-- 🔒 **Privacy Policy**: [Privacy](https://my-extension.blogspot.com/p/privacy-policy_15.html)
+- 💼 **Portfolio**: [madreesdigipro.blogspot.com](https://madreesdigipro.blogspot.com/)
+- 🤝 **Support**: [Get Support](https://madreesdigipro.blogspot.com/p/support.html)
+- ☕ **Donate**: [Support the Project](https://madreesdigipro.blogspot.com/p/donate.html)
+- 📜 **Terms of Service**: [Terms](https://madreesdigipro.blogspot.com/p/terms-of-service.html)
+- 🔒 **Privacy Policy**: [Privacy](https://madreesdigipro.blogspot.com/p/privacy-policy.html)
 
 ---
 

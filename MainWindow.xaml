@@ -263,7 +263,7 @@
                         <Image Source="Assets/app_icon.png" Width="28" Height="28" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
                         <TextBlock Text="Pak Android Bloatware Remover" FontSize="20" FontWeight="Bold" Foreground="#064E3B" Margin="0,0,10,0"/>
                         <Border Background="#DCFCE7" BorderBrush="#86EFAC" BorderThickness="1" CornerRadius="12" Padding="8,2" VerticalAlignment="Center">
-                            <TextBlock Text="v1.0.0 Pro Edition" FontSize="11" Foreground="#047857" FontWeight="Bold"/>
+                            <TextBlock Text="v1.1.0 Pro Edition" FontSize="11" Foreground="#047857" FontWeight="Bold"/>
                         </Border>
                     </StackPanel>
 
@@ -271,6 +271,7 @@
                         <Ellipse x:Name="statusIndicator" Width="10" Height="10" Fill="#EF4444" Margin="0,0,8,0"/>
                         <TextBlock x:Name="txtDeviceInfo" Text="Searching for connected device..." FontSize="13" Foreground="#1E293B" FontWeight="Medium"/>
                         <TextBlock x:Name="txtBatteryInfo" Text="" FontSize="13" Foreground="#059669" FontWeight="Bold" Margin="14,0,0,0"/>
+                        <TextBlock x:Name="txtStorageInfo" Text="" FontSize="13" Foreground="#0284C7" FontWeight="Bold" Margin="14,0,0,0"/>
                     </StackPanel>
                 </StackPanel>
 
@@ -420,6 +421,7 @@
                                 <Button Content="Select All" Style="{StaticResource ModernButton}" Margin="0,0,8,0" Click="BtnSelectAll_Click"/>
                                 <Button Content="Deselect All" Style="{StaticResource ModernButton}" Margin="0,0,8,0" Click="BtnDeselectAll_Click"/>
                                 <Button Content="⚡ Select Safe Bloatware" Style="{StaticResource SuccessButton}" Margin="0,0,8,0" Click="BtnSelectSafeBloatware_Click"/>
+                                <Button x:Name="btnBackupSelected" Content="💾 Backup Selected APKs" Style="{StaticResource ModernButton}" Margin="0,0,8,0" Click="BtnBackupSelected_Click"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -530,10 +532,13 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="📁 Or Install Local APK File directly" FontSize="13" FontWeight="Bold" Foreground="#064E3B"/>
-                                <TextBlock Text="Drag and drop any downloaded .apk file here or browse from your PC to install onto your phone." Foreground="#065F46" FontSize="11" Margin="0,2,0,0"/>
+                                <TextBlock Text="📁 Batch &amp; Single APK Installer" FontSize="13" FontWeight="Bold" Foreground="#064E3B"/>
+                                <TextBlock Text="Drag and drop multiple .apk files here or browse to install one or many APKs onto your phone." Foreground="#065F46" FontSize="11" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Button Grid.Column="1" Content="📂 Browse APK File..." Style="{StaticResource ModernButton}" Click="BtnBrowseApk_Click"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button Content="📂 Browse APKs (Multi-Select)" Style="{StaticResource ModernButton}" Margin="0,0,8,0" Click="BtnBrowseApk_Click"/>
+                                <Button Content="📁 Install Folder of APKs" Style="{StaticResource ModernButton}" Click="BtnBrowseApkFolder_Click"/>
+                            </StackPanel>
                         </Grid>
                     </Border>
 
@@ -687,6 +692,18 @@
                                     <Button Content="🔄 Reboot Device" Style="{StaticResource ModernButton}" Margin="0,0,10,0" Click="BtnRebootNormal_Click"/>
                                     <Button Content="🛠️ Reboot to Recovery" Style="{StaticResource ModernButton}" Margin="0,0,10,0" Click="BtnRebootRecovery_Click"/>
                                     <Button Content="⚡ Reboot to Bootloader" Style="{StaticResource ModernButton}" Click="BtnRebootBootloader_Click"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Screenshot Tool Section -->
+                        <Border Background="#F0FDF4" CornerRadius="8" Padding="16" BorderBrush="#A7F3D0" BorderThickness="1" Margin="0,16,0,0">
+                            <StackPanel>
+                                <TextBlock Text="📸 Phone Screenshot Tool" FontSize="16" FontWeight="Bold" Foreground="#047857" Margin="0,0,0,8"/>
+                                <TextBlock Text="Take a high-definition screenshot of your phone display and save it directly to your PC (you choose where to save)." Foreground="#065F46" Margin="0,0,0,12"/>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="btnCaptureScreenshot" Content="📷 Take &amp; Save Screenshot..." Style="{StaticResource SuccessButton}" Click="BtnCaptureScreenshot_Click"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>

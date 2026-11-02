@@ -98,6 +98,8 @@ namespace AndroidDebloater
                     txtDeviceInfo.Text = $"{device.Manufacturer} {device.Model} | Android {device.AndroidVersion} (SN: {device.Serial})";
                 if (txtBatteryInfo != null)
                     txtBatteryInfo.Text = $"🔋 {device.BatteryLevel}";
+                if (txtStorageInfo != null)
+                    txtStorageInfo.Text = string.IsNullOrEmpty(device.StorageInfo) ? "" : $"💾 {device.StorageInfo}";
                 if (statusIndicator != null)
                     statusIndicator.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#059669"));
 
@@ -112,6 +114,8 @@ namespace AndroidDebloater
                     txtDeviceInfo.Text = "No Android device detected. Connect via USB with USB Debugging enabled.";
                 if (txtBatteryInfo != null)
                     txtBatteryInfo.Text = "";
+                if (txtStorageInfo != null)
+                    txtStorageInfo.Text = "";
                 if (statusIndicator != null)
                     statusIndicator.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EF4444"));
 
@@ -226,6 +230,54 @@ namespace AndroidDebloater
             }
 
             MessageBox.Show($"Selected {count} safe bloatware packages ready for uninstall.", "Safe Bloat Selected", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private async void BtnBackupSelected_Click(object sender, RoutedEventArgs e)
+        {
+            var selected = _displayedInstalled.Where(p => p.IsSelected).ToList();
+            if (!selected.Any())
+            {
+                MessageBox.Show("Please select at least one app to backup.", "No Selection", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var dialog = new OpenFolderDialog
+            {
+                Title = "Select Destination Folder to Save APK Backups",
+                Multiselect = false
+            };
+
+            if (dialog.ShowDialog() != true) return;
+
+            var targetFolder = dialog.FolderName;
+            if (string.IsNullOrWhiteSpace(targetFolder) || !Directory.Exists(targetFolder))
+            {
+                MessageBox.Show("Selected destination folder is not valid.", "Invalid Folder", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            SetBusy(true, $"Backing up {selected.Count} APKs...");
+            int successCount = 0;
+
+            foreach (var app in selected)
+            {
+                if (string.IsNullOrWhiteSpace(app.ApkPath)) continue;
+
+                var safeName = string.Join("_", app.FriendlyName.Split(Path.GetInvalidFileNameChars()));
+                var fileName = $"{safeName}_{app.PackageName}.apk";
+                var destinationPath = Path.Combine(targetFolder, fileName);
+
+                SetBusy(true, $"Backing up {app.FriendlyName}...");
+                var ok = await _adbService.BackupApkAsync(app.ApkPath, destinationPath);
+                if (ok) successCount++;
+            }
+
+            SetBusy(false, $"Backed up {successCount} of {selected.Count} APKs.");
+            var resultMsg = $"Successfully backed up {successCount} of {selected.Count} app APKs to:\n{targetFolder}";
+            if (MessageBox.Show($"{resultMsg}\n\nWould you like to open this folder now?", "Backup Complete", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+            {
+                Process.Start(new ProcessStartInfo { FileName = targetFolder, UseShellExecute = true });
+            }
         }
 
         private void BtnSelectAllUninstalled_Click(object sender, RoutedEventArgs e)
@@ -392,18 +444,39 @@ namespace AndroidDebloater
             }
         }
 
-        // --- Local APK Install Handlers ---
+        // --- Local APK Install Handlers (Single & Batch) ---
         private async void BtnBrowseApk_Click(object sender, RoutedEventArgs e)
         {
             var ofd = new OpenFileDialog
             {
                 Filter = "Android Package (*.apk)|*.apk|All Files (*.*)|*.*",
-                Title = "Select APK File to Install"
+                Title = "Select APK File(s) to Install",
+                Multiselect = true
             };
 
-            if (ofd.ShowDialog() == true)
+            if (ofd.ShowDialog() == true && ofd.FileNames.Length > 0)
             {
-                await InstallLocalApkFile(ofd.FileName);
+                await InstallApkBatchAsync(ofd.FileNames);
+            }
+        }
+
+        private async void BtnBrowseApkFolder_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFolderDialog
+            {
+                Title = "Select Folder Containing APK Files",
+                Multiselect = false
+            };
+
+            if (dialog.ShowDialog() == true && !string.IsNullOrWhiteSpace(dialog.FolderName))
+            {
+                var apkFiles = Directory.GetFiles(dialog.FolderName, "*.apk", SearchOption.TopDirectoryOnly);
+                if (apkFiles.Length == 0)
+                {
+                    MessageBox.Show("No .apk files found in the selected folder.", "No APKs Found", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                await InstallApkBatchAsync(apkFiles);
             }
         }
 
@@ -419,15 +492,50 @@ namespace AndroidDebloater
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                foreach (var file in files)
+                var dropped = (string[])e.Data.GetData(DataFormats.FileDrop);
+                var apkList = new List<string>();
+                foreach (var item in dropped)
                 {
-                    if (file.EndsWith(".apk", StringComparison.OrdinalIgnoreCase))
+                    if (File.Exists(item) && item.EndsWith(".apk", StringComparison.OrdinalIgnoreCase))
                     {
-                        await InstallLocalApkFile(file);
+                        apkList.Add(item);
+                    }
+                    else if (Directory.Exists(item))
+                    {
+                        apkList.AddRange(Directory.GetFiles(item, "*.apk", SearchOption.TopDirectoryOnly));
                     }
                 }
+
+                if (apkList.Count > 0)
+                {
+                    await InstallApkBatchAsync(apkList);
+                }
             }
+        }
+
+        private async Task InstallApkBatchAsync(IEnumerable<string> apkPaths)
+        {
+            var fileList = apkPaths.Distinct().ToList();
+            if (!fileList.Any()) return;
+
+            var confirm = MessageBox.Show($"Install {fileList.Count} APK file(s) onto your connected phone?", "Confirm Batch Install", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (confirm != MessageBoxResult.Yes) return;
+
+            SetBusy(true, $"Installing {fileList.Count} APKs...");
+            int success = 0;
+
+            for (int i = 0; i < fileList.Count; i++)
+            {
+                var apk = fileList[i];
+                var name = Path.GetFileName(apk);
+                SetBusy(true, $"Installing ({i + 1}/{fileList.Count}): {name}...");
+                var ok = await _adbService.InstallApkAsync(apk);
+                if (ok) success++;
+            }
+
+            SetBusy(false, $"Batch install completed: {success}/{fileList.Count} succeeded.");
+            MessageBox.Show($"Batch installation complete!\n\nSuccessfully installed: {success} of {fileList.Count} APKs.", "Batch Install Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+            await RefreshAllAsync();
         }
 
         private async Task InstallLocalApkFile(string apkPath)
@@ -518,6 +626,35 @@ namespace AndroidDebloater
                 await _adbService.RebootAsync("bootloader");
         }
 
+        // --- Screenshot Tool Handler ---
+        private async void BtnCaptureScreenshot_Click(object sender, RoutedEventArgs e)
+        {
+            var sfd = new SaveFileDialog
+            {
+                Filter = "PNG Image (*.png)|*.png|All Files (*.*)|*.*",
+                FileName = $"Phone_Screenshot_{DateTime.Now:yyyyMMdd_HHmmss}.png",
+                Title = "Choose Where to Save Screenshot"
+            };
+
+            if (sfd.ShowDialog() != true) return;
+
+            SetBusy(true, "Capturing screenshot from phone...");
+            var ok = await _adbService.CaptureScreenshotAsync(sfd.FileName);
+            SetBusy(false, ok ? "Screenshot captured successfully!" : "Failed to capture screenshot.");
+
+            if (ok)
+            {
+                if (MessageBox.Show($"Screenshot saved successfully!\n\nLocation: {sfd.FileName}\n\nWould you like to open the image now?", "Screenshot Saved", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    Process.Start(new ProcessStartInfo { FileName = sfd.FileName, UseShellExecute = true });
+                }
+            }
+            else
+            {
+                MessageBox.Show("Failed to capture phone screenshot. Please ensure your device is unlocked and connected.", "Screenshot Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         // --- Log Handlers ---
         private void BtnCopyLog_Click(object sender, RoutedEventArgs e)
         {
@@ -530,11 +667,11 @@ namespace AndroidDebloater
         private async void BtnRefreshDevice_Click(object sender, RoutedEventArgs e) => await RefreshAllAsync();
 
         // --- Developer Credit Links Handlers ---
-        private void LinkPortfolio_Click(object sender, MouseButtonEventArgs e) => OpenBrowser("https://adrees2022.blogspot.com/");
-        private void LinkSupport_Click(object sender, MouseButtonEventArgs e) => OpenBrowser("https://my-extension.blogspot.com/p/support.html");
-        private void LinkDonate_Click(object sender, MouseButtonEventArgs e) => OpenBrowser("https://my-extension.blogspot.com/p/donate.html");
-        private void LinkTerms_Click(object sender, MouseButtonEventArgs e) => OpenBrowser("https://my-extension.blogspot.com/p/terms.html");
-        private void LinkPrivacy_Click(object sender, MouseButtonEventArgs e) => OpenBrowser("https://my-extension.blogspot.com/p/privacy-policy_15.html");
+        private void LinkPortfolio_Click(object sender, MouseButtonEventArgs e) => OpenBrowser("https://madreesdigipro.blogspot.com/");
+        private void LinkSupport_Click(object sender, MouseButtonEventArgs e) => OpenBrowser("https://madreesdigipro.blogspot.com/p/support.html");
+        private void LinkDonate_Click(object sender, MouseButtonEventArgs e) => OpenBrowser("https://madreesdigipro.blogspot.com/p/donate.html");
+        private void LinkTerms_Click(object sender, MouseButtonEventArgs e) => OpenBrowser("https://madreesdigipro.blogspot.com/p/terms-of-service.html");
+        private void LinkPrivacy_Click(object sender, MouseButtonEventArgs e) => OpenBrowser("https://madreesdigipro.blogspot.com/p/privacy-policy.html");
 
         private void OpenBrowser(string url)
         {

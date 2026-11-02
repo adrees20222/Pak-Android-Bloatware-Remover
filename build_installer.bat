@@ -39,6 +39,6 @@ if %ERRORLEVEL% NEQ 0 (
 echo.
 echo =======================================================
 echo SUCCESS! Setup Installer created in:
-echo %~dp0..\installer_output\Pak_Android_Bloatware_Remover_Setup_v1.0.0.exe
+echo %~dp0..\installer_output\Pak_Android_Bloatware_Remover_Setup_v1.1.0.exe
 echo =======================================================
 pause

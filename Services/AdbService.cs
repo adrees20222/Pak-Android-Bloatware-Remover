@@ -140,6 +140,31 @@ namespace AndroidDebloater.Services
                 {
                     info.BatteryLevel = batteryMatch.Groups[1].Value + "%";
                 }
+
+                // Internal Storage query
+                try
+                {
+                    var dfRaw = await RunCommandAsync("shell df -h /data");
+                    var dfLines = dfRaw.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var dfLine in dfLines)
+                    {
+                        if (dfLine.Contains("/data") && !dfLine.StartsWith("Filesystem"))
+                        {
+                            var parts = dfLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (parts.Length >= 4)
+                            {
+                                var total = parts[1];
+                                var avail = parts.Length >= 6 ? parts[3] : parts[parts.Length - 3];
+                                info.StorageInfo = $"{avail} Free / {total} Total";
+                                break;
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // Fallback silently if df command parsing fails
+                }
             }
             catch (Exception ex)
             {
@@ -275,6 +300,57 @@ namespace AndroidDebloater.Services
             catch (Exception ex)
             {
                 LogOutput?.Invoke($"[ERROR] APK installation failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> BackupApkAsync(string remoteApkPath, string localDestinationFilePath)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(remoteApkPath)) return false;
+
+                LogOutput?.Invoke($"[BACKUP] Pulling {remoteApkPath} to {localDestinationFilePath}...");
+                var dir = Path.GetDirectoryName(localDestinationFilePath);
+                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
+                var output = await RunCommandAsync($"pull \"{remoteApkPath}\" \"{localDestinationFilePath}\"");
+                LogOutput?.Invoke($"[BACKUP RESULT] {output.Trim()}");
+                return File.Exists(localDestinationFilePath);
+            }
+            catch (Exception ex)
+            {
+                LogOutput?.Invoke($"[ERROR] Backup failed for {remoteApkPath}: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> CaptureScreenshotAsync(string localDestinationFilePath)
+        {
+            try
+            {
+                LogOutput?.Invoke($"[SCREENSHOT] Capturing screenshot to {localDestinationFilePath}...");
+                var tempDevicePath = "/sdcard/pak_screencap_temp.png";
+                await RunCommandAsync($"shell screencap -p {tempDevicePath}");
+
+                var dir = Path.GetDirectoryName(localDestinationFilePath);
+                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
+                var pullOutput = await RunCommandAsync($"pull \"{tempDevicePath}\" \"{localDestinationFilePath}\"");
+                await RunCommandAsync($"shell rm {tempDevicePath}");
+
+                LogOutput?.Invoke($"[SCREENSHOT RESULT] {pullOutput.Trim()}");
+                return File.Exists(localDestinationFilePath);
+            }
+            catch (Exception ex)
+            {
+                LogOutput?.Invoke($"[ERROR] Screenshot failed: {ex.Message}");
                 return false;
             }
         }

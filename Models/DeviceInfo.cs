@@ -7,6 +7,7 @@ namespace AndroidDebloater.Models
         public string Manufacturer { get; set; } = "Unknown";
         public string AndroidVersion { get; set; } = "Unknown";
         public string BatteryLevel { get; set; } = "--";
+        public string StorageInfo { get; set; } = string.Empty;
         public bool IsConnected { get; set; }
 
         public string DisplayName => IsConnected
