@@ -655,6 +655,75 @@ namespace AndroidDebloater
             }
         }
 
+        // --- Device Optimizer Handlers ---
+        private async void BtnClearCacheJunk_Click(object sender, RoutedEventArgs e)
+        {
+            var confirm = MessageBox.Show("Reclaim system cache across all apps and clean staging junk?\n\nNote: This will NOT delete any app accounts, personal files, or chat data.", "Confirm Cache Cleaning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (confirm != MessageBoxResult.Yes) return;
+
+            SetBusy(true, "Cleaning system cache & junk...");
+            var res = await _adbService.ClearSystemCacheAndJunkAsync();
+            SetBusy(false, res);
+            MessageBox.Show(res, "Junk Cleaning Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+            await RefreshAllAsync();
+        }
+
+        private async void BtnFreeRam_Click(object sender, RoutedEventArgs e)
+        {
+            SetBusy(true, "Terminating inactive background apps to free RAM...");
+            var res = await _adbService.FreeRamMemoryAsync();
+            SetBusy(false, res);
+            MessageBox.Show(res, "RAM Boost Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private async void BtnResetBatteryStats_Click(object sender, RoutedEventArgs e)
+        {
+            SetBusy(true, "Calibrating battery statistics...");
+            var ok = await _adbService.ResetBatteryStatsAsync();
+            SetBusy(false, ok ? "Battery statistics recalibrated!" : "Failed to reset battery stats.");
+            if (ok)
+            {
+                MessageBox.Show("Battery statistics history was successfully recalibrated!\n\nAndroid will now accurately measure battery drain with bloatware removed.", "Battery Calibrated", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Failed to recalibrate battery stats. Ensure device is connected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void BtnFastAnimation_Click(object sender, RoutedEventArgs e)
+        {
+            SetBusy(true, "Setting animations to 0.5x (Fast)...");
+            var ok = await _adbService.SetAnimationSpeedAsync(0.5);
+            SetBusy(false, ok ? "Animations set to 0.5x!" : "Failed to adjust animation scale.");
+            if (ok)
+            {
+                MessageBox.Show("🚀 Success! System animations set to 0.5x.\nYour phone transitions and app launches will now feel twice as fast and responsive!", "Speed Boost Activated", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private async void BtnInstantAnimation_Click(object sender, RoutedEventArgs e)
+        {
+            SetBusy(true, "Disabling animations (0.0x - Zero Lag)...");
+            var ok = await _adbService.SetAnimationSpeedAsync(0.0);
+            SetBusy(false, ok ? "Animations set to 0.0x!" : "Failed to adjust animation scale.");
+            if (ok)
+            {
+                MessageBox.Show("⚡ Instant Mode Activated! All animation delay scales set to 0.0x.\nApp openings and window switches now happen instantly with zero lag.", "Zero Lag Activated", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private async void BtnDefaultAnimation_Click(object sender, RoutedEventArgs e)
+        {
+            SetBusy(true, "Restoring stock animation scale (1.0x)...");
+            var ok = await _adbService.SetAnimationSpeedAsync(1.0);
+            SetBusy(false, ok ? "Animations restored to 1.0x." : "Failed to reset animation scale.");
+            if (ok)
+            {
+                MessageBox.Show("Stock Android animation speeds (1.0x) restored.", "Restored to Default", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
         // --- Log Handlers ---
         private void BtnCopyLog_Click(object sender, RoutedEventArgs e)
         {

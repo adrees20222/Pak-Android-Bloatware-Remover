@@ -263,7 +263,7 @@
                         <Image Source="Assets/app_icon.png" Width="28" Height="28" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
                         <TextBlock Text="Pak Android Bloatware Remover" FontSize="20" FontWeight="Bold" Foreground="#064E3B" Margin="0,0,10,0"/>
                         <Border Background="#DCFCE7" BorderBrush="#86EFAC" BorderThickness="1" CornerRadius="12" Padding="8,2" VerticalAlignment="Center">
-                            <TextBlock Text="v1.1.0 Pro Edition" FontSize="11" Foreground="#047857" FontWeight="Bold"/>
+                            <TextBlock Text="v1.2.0 Pro Edition" FontSize="11" Foreground="#047857" FontWeight="Bold"/>
                         </Border>
                     </StackPanel>
 
@@ -707,6 +707,30 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+
+                        <!-- Device Optimizer & System Cleaner Section -->
+                        <Border Background="#F0FDF4" CornerRadius="8" Padding="16" BorderBrush="#A7F3D0" BorderThickness="1" Margin="0,16,0,0">
+                            <StackPanel>
+                                <TextBlock Text="⚡ Device Optimizer &amp; System Cleaner (No Root)" FontSize="16" FontWeight="Bold" Foreground="#047857" Margin="0,0,0,8"/>
+                                <TextBlock Text="System-level utilities to reclaim storage, boost RAM, eliminate animation lag, and calibrate battery stats." Foreground="#065F46" Margin="0,0,0,14"/>
+
+                                <!-- Storage & Memory Row -->
+                                <TextBlock Text="Storage &amp; Memory Optimization:" FontSize="13" FontWeight="SemiBold" Foreground="#064E3B" Margin="0,0,0,6"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                                    <Button x:Name="btnClearCacheJunk" Content="🧹 Clear App Cache &amp; Junk" Style="{StaticResource SuccessButton}" Margin="0,0,10,0" Click="BtnClearCacheJunk_Click"/>
+                                    <Button x:Name="btnFreeRam" Content="⚡ Free RAM (Kill Inactive Apps)" Style="{StaticResource ModernButton}" Margin="0,0,10,0" Click="BtnFreeRam_Click"/>
+                                    <Button x:Name="btnResetBatteryStats" Content="🔋 Calibrate Battery Stats" Style="{StaticResource ModernButton}" Click="BtnResetBatteryStats_Click"/>
+                                </StackPanel>
+
+                                <!-- UI Speed & Animation Scaling Row -->
+                                <TextBlock Text="UI Speed &amp; Animation Scaling (Instant Responsiveness):" FontSize="13" FontWeight="SemiBold" Foreground="#064E3B" Margin="0,0,0,6"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="btnFastAnimation" Content="🚀 Fast Animations (0.5x - 2x Faster)" Style="{StaticResource PrimaryButton}" Margin="0,0,10,0" Click="BtnFastAnimation_Click"/>
+                                    <Button x:Name="btnInstantAnimation" Content="⚡ Zero Lag (0.0x - Instant)" Style="{StaticResource ModernButton}" Margin="0,0,10,0" Click="BtnInstantAnimation_Click"/>
+                                    <Button x:Name="btnDefaultAnimation" Content="🔄 Default Scale (1.0x)" Style="{StaticResource ModernButton}" Click="BtnDefaultAnimation_Click"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -759,7 +783,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Developed with ❤️ by Muhammad Adrees" VerticalAlignment="Center" FontSize="12" Foreground="#064E3B" FontWeight="Bold"/>
+                <TextBlock Text="Developer: M Adrees Digi Pro" VerticalAlignment="Center" FontSize="12" Foreground="#064E3B" FontWeight="Bold"/>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <TextBlock Text="Portfolio" Style="{StaticResource FooterLink}" MouseLeftButtonDown="LinkPortfolio_Click"/>

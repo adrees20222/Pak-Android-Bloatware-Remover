@@ -28,6 +28,11 @@
 - ⚡ **1-Click Safe Bloatware Cleaning**: Instant **"Select Safe Bloatware"** button to check and clean known bloatware automatically.
 - 🔄 **Safe Restore & Reinstall**: Easily restore previously removed system apps back onto your device anytime using the **Restore Apps** tab.
 - 🔍 **App Search & Direct Phone Installer**: Search for any app from Google Play / Open Repositories, inspect the Play Store page, and install directly to your phone — **zero Google account or Play Store login required**.
+- ⚡ **Device Optimizer & System Cleaner (No Root)**:
+  - 🧹 **Clear App Cache & Junk**: Commands system package manager to reclaim storage cache across all apps and purges `/data/local/tmp/` staging junk.
+  - ⚡ **Free RAM**: Terminates inactive, lingering background processes to immediately free up system memory and cool down CPU.
+  - 🚀 **UI Animation Speed Scaling**: Toggle between **0.5x Fast** (feels 2x faster), **0.0x Instant** (zero animation lag), and **1.0x Default**.
+  - 🔋 **Battery Calibration Reset**: Resets Android's internal battery telemetry after debloating so Android calculates battery runtime accurately.
 - 💾 **Backup Selected APKs to PC**: Select any installed apps and extract/backup their APK files directly to any custom PC folder of your choice.
 - 📁 **Batch Multi-APK Installer**: Multi-select multiple `.apk` files or an entire folder to install apps sequentially onto your device.
 - 📊 **Device Specs & Storage Dashboard**: Live battery percentage and real-time internal storage monitoring (Free / Total space) in the header.
@@ -106,7 +111,7 @@ build_installer.bat
 
 ## 👨‍💻 Developer & Credits
 
-Developed with ❤️ by **Muhammad Adrees**
+Developer: **M Adrees Digi Pro**
 
 - 💼 **Portfolio**: [madreesdigipro.blogspot.com](https://madreesdigipro.blogspot.com/)
 - 🤝 **Support**: [Get Support](https://madreesdigipro.blogspot.com/p/support.html)

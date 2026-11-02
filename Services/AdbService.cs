@@ -354,5 +354,76 @@ namespace AndroidDebloater.Services
                 return false;
             }
         }
+
+        public async Task<string> ClearSystemCacheAndJunkAsync()
+        {
+            try
+            {
+                LogOutput?.Invoke("[OPTIMIZE] Reclaiming system cache and purging temporary junk...");
+                var trimOutput = await RunCommandAsync("shell pm trim-caches 999G");
+                LogOutput?.Invoke($"[OPTIMIZE] Trim caches result: {trimOutput.Trim()}");
+
+                await RunCommandAsync("shell rm -rf /data/local/tmp/*");
+                LogOutput?.Invoke("[OPTIMIZE] /data/local/tmp/ staging cache cleaned.");
+
+                return "System app cache & temporary junk cleaned successfully.";
+            }
+            catch (Exception ex)
+            {
+                LogOutput?.Invoke($"[ERROR] Cache cleaning failed: {ex.Message}");
+                return $"Cache cleaning error: {ex.Message}";
+            }
+        }
+
+        public async Task<string> FreeRamMemoryAsync()
+        {
+            try
+            {
+                LogOutput?.Invoke("[OPTIMIZE] Killing inactive background processes to free RAM...");
+                var output = await RunCommandAsync("shell am kill-all");
+                LogOutput?.Invoke($"[OPTIMIZE] am kill-all result: {output.Trim()}");
+                return "Inactive background processes terminated. RAM successfully freed.";
+            }
+            catch (Exception ex)
+            {
+                LogOutput?.Invoke($"[ERROR] RAM kill failed: {ex.Message}");
+                return $"RAM optimization error: {ex.Message}";
+            }
+        }
+
+        public async Task<bool> SetAnimationSpeedAsync(double scale)
+        {
+            try
+            {
+                var val = scale.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+                LogOutput?.Invoke($"[OPTIMIZE] Setting system animation scale to {val}x...");
+                await RunCommandAsync($"shell settings put global window_animation_scale {val}");
+                await RunCommandAsync($"shell settings put global transition_animation_scale {val}");
+                await RunCommandAsync($"shell settings put global animator_duration_scale {val}");
+                LogOutput?.Invoke($"[OPTIMIZE] Animation scale set to {val}x.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogOutput?.Invoke($"[ERROR] Failed to set animation scale: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> ResetBatteryStatsAsync()
+        {
+            try
+            {
+                LogOutput?.Invoke("[OPTIMIZE] Resetting device battery history statistics...");
+                var output = await RunCommandAsync("shell dumpsys batterystats --reset");
+                LogOutput?.Invoke($"[OPTIMIZE] Battery stats reset result: {output.Trim()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogOutput?.Invoke($"[ERROR] Battery stats reset failed: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
 ; Script generated for Pak Android Bloatware Remover
 #define MyAppName "Pak Android Bloatware Remover"
-#define MyAppVersion "1.1.0"
-#define MyAppPublisher "Muhammad Adrees"
+#define MyAppVersion "1.2.0"
+#define MyAppPublisher "M Adrees Digi Pro"
 #define MyAppExeName "AndroidDebloater.exe"
 
 [Setup]
@@ -13,7 +13,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=..\installer_output
-OutputBaseFilename=Pak_Android_Bloatware_Remover_Setup_v1.1.0
+OutputBaseFilename=Pak_Android_Bloatware_Remover_Setup_v1.2.0
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
